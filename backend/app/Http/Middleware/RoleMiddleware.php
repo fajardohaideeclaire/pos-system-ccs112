@@ -4,36 +4,33 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, string ...$roles)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
 
-        if (!$user || !in_array($user->role, $roles)) {
-            return response()->json(['message' => 'Unauthorized.'], 403);
-=======
-use Symfony\Component\HttpFoundation\Response;
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Not authenticated'
+                ], 401);
+            }
 
-class RoleMiddleware
-{
-    /**
-     * Handle an incoming request.
-     */
-    public function handle(Request $request, Closure $next, string ...$roles): Response
-    {
-        $user = $request->user();
+            if (!in_array($user->role, $roles)) {
+                return response()->json([
+                    'message' => 'Forbidden'
+                ], 403);
+            }
 
-        // CHECK AUTH + ROLE
-        if (!$user || !in_array($user->role, $roles)) {
+            return $next($request);
+
+        } catch (\Throwable $e) {
             return response()->json([
-                'message' => 'Unauthorized.'
-            ], 403);
->>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
+                'message' => 'Middleware error',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return $next($request);
     }
 }

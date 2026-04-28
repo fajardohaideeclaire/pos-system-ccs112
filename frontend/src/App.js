@@ -9,8 +9,11 @@ import Sidebar from './components/Sidebar';
 
 function App() {
     const [user, setUser] = useState(() => {
-        try { return JSON.parse(localStorage.getItem('pos_user')); }
-        catch { return null; }
+        try {
+            return JSON.parse(localStorage.getItem('pos_user'));
+        } catch {
+            return null;
+        }
     });
 
     const [page, setPage] = useState('dashboard');
@@ -18,9 +21,12 @@ function App() {
     const handleLogout = async () => {
         try {
             const token = localStorage.getItem('pos_token');
-            await fetch(`${process.env.REACT_APP_API_URL}/logout`, {
+            await fetch('http://127.0.0.1:8000/api/logout', {
                 method: 'POST',
-                headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json'
+                }
             });
         } catch {}
 
@@ -45,7 +51,7 @@ function App() {
     return (
         <div style={{ display: 'flex' }}>
             <Sidebar page={page} setPage={setPage} user={user} onLogout={handleLogout} />
-            <main style={{ flex: 1, padding: '20px' }}>
+            <main style={{ flex: 1, padding: '24px' }}>
                 {renderPage()}
             </main>
         </div>
