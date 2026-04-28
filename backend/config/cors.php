@@ -7,12 +7,27 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
+<<<<<<< HEAD
         'http://localhost:3000',
         'http://127.0.0.1:5500',
     ],
 
     'allowed_headers' => ['*'],
 
+=======
+        'http://localhost:3000',   // React (create-react-app)
+        'http://127.0.0.1:5500',  // Live Server / static frontend
+    ],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+>>>>>>> origin/fernandez
     'supports_credentials' => true,
 
 ];

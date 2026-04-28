@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
+=======
+
+// Controllers
+>>>>>>> origin/fernandez
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
@@ -14,29 +19,55 @@ use App\Http\Controllers\AuditLogController;
 |--------------------------------------------------------------------------
 */
 
+<<<<<<< HEAD
 // Public
 Route::post('/login', [AuthController::class, 'login']);
 
 // Protected
 Route::middleware('auth:sanctum')->group(function () {
 
+=======
+// 🔓 Public
+Route::post('/login', [AuthController::class, 'login']);
+
+
+// 🔐 Protected (requires login)
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    // AUTH
+>>>>>>> origin/fernandez
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/verify-supervisor', [AuthController::class, 'verifySupervisor']);
 
+<<<<<<< HEAD
     // Products
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/search', [ProductController::class, 'search']);
 
     Route::middleware('role:admin')->group(function () {
+=======
+
+    // 📦 PRODUCTS
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/search', [ProductController::class, 'search']);
+
+    Route::middleware(['role:admin'])->group(function () {
+>>>>>>> origin/fernandez
         Route::post('/products', [ProductController::class, 'store']);
         Route::put('/products/{id}', [ProductController::class, 'update']);
         Route::patch('/products/{id}/deactivate', [ProductController::class, 'deactivate']);
         Route::patch('/products/{id}/activate', [ProductController::class, 'activate']);
     });
 
+<<<<<<< HEAD
     // Users
     Route::middleware('role:admin')->group(function () {
+=======
+
+    // 👤 USERS (ADMIN ONLY)
+    Route::middleware(['role:admin'])->group(function () {
+>>>>>>> origin/fernandez
         Route::get('/users', [UserController::class, 'index']);
         Route::post('/users', [UserController::class, 'store']);
         Route::put('/users/{id}', [UserController::class, 'update']);
@@ -44,7 +75,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/users/{id}/unlock', [UserController::class, 'unlock']);
     });
 
+<<<<<<< HEAD
     // Transactions
+=======
+
+    // 🧾 TRANSACTIONS
+>>>>>>> origin/fernandez
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::get('/transactions/{id}', [TransactionController::class, 'show']);
     Route::post('/transactions', [TransactionController::class, 'store']);
@@ -54,12 +90,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/transactions/{id}/post-void', [TransactionController::class, 'postVoid']);
     Route::post('/transactions/{id}/reprint', [TransactionController::class, 'reprint']);
 
+<<<<<<< HEAD
     // Discounts
     Route::get('/discounts', [DiscountController::class, 'index']);
     Route::post('/transactions/{id}/apply-discount', [DiscountController::class, 'apply']);
 
     // Audit Logs
     Route::middleware('role:admin,supervisor')->group(function () {
+=======
+
+    // 🎯 DISCOUNTS
+    Route::get('/discounts', [DiscountController::class, 'index']);
+    Route::post('/transactions/{id}/apply-discount', [DiscountController::class, 'apply']);
+
+
+    // 📊 AUDIT LOGS (ADMIN + SUPERVISOR)
+    Route::middleware(['role:admin,supervisor'])->group(function () {
+>>>>>>> origin/fernandez
         Route::get('/audit-logs', [AuditLogController::class, 'index']);
     });
 
