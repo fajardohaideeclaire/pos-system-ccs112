@@ -7,30 +7,18 @@ use Illuminate\Http\Request;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, string $roles)
     {
-        try {
-            $user = $request->user();
-
-            if (!$user) {
-                return response()->json([
-                    'message' => 'Not authenticated'
-                ], 401);
-            }
-
-            if (!in_array($user->role, $roles)) {
-                return response()->json([
-                    'message' => 'Forbidden'
-                ], 403);
-            }
-
-            return $next($request);
-
-        } catch (\Throwable $e) {
-            return response()->json([
-                'message' => 'Middleware error',
-                'error' => $e->getMessage()
-            ], 500);
+        if (!$request->user()) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
         }
+
+        $roleArray = explode('|', $roles);
+
+        if (!in_array($request->user()->role, $roleArray)) {
+            return response()->json(['message' => 'Unauthorized Access'], 403);
+        }
+
+        return $next($request);
     }
 }

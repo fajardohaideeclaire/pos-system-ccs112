@@ -15,16 +15,19 @@ return new class extends Migration
             $table->id();
 
             // RELATIONSHIPS
+            // If the transaction is deleted, the items go with it.
             $table->foreignId('transaction_id')->constrained('transactions')->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained('products');
+            
+            // CHANGE: Use nullOnDelete. If a product is deleted, the sales record stays.
+            $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
 
-            // SNAPSHOT DATA (important for history)
+            // SNAPSHOT DATA (The most important part of this model)
             $table->string('product_name');
-            $table->decimal('unit_price', 10, 2);
+            $table->decimal('unit_price', 12, 2); // Increased precision to match Transactions
 
             // QUANTITY & TOTAL
             $table->integer('quantity');
-            $table->decimal('subtotal', 10, 2);
+            $table->decimal('subtotal', 12, 2);
 
             // VOID CONTROL (per item)
             $table->boolean('is_voided')->default(false);

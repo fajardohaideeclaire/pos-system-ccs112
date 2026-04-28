@@ -14,6 +14,15 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            
+            // --- POS CUSTOM FIELDS START ---
+            $table->string('username')->unique(); 
+            $table->string('role')->default('cashier'); 
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->boolean('is_locked')->default(false);
+            $table->integer('failed_attempts')->default(0);
+            // --- POS CUSTOM FIELDS END ---
+
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

@@ -15,19 +15,21 @@ return new class extends Migration
             $table->id();
 
             // USER REFERENCE
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            // Change: nullOnDelete prevents deleting the evidence if a user is removed.
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
 
             // ACTION DETAILS
-            $table->string('action');      // e.g. CREATE, UPDATE, DELETE, LOGIN
-            $table->string('module');      // e.g. products, transactions, users
+            $table->string('action');      // e.g. LOGIN, LOGOUT, CREATE, UPDATE, VOID
+            $table->string('module');      // e.g. inventory, sales, settings
             $table->text('description');
 
-            // DATA CHANGES
+            // DATA CHANGES (Store as JSON for deep tracking)
             $table->json('old_values')->nullable();
             $table->json('new_values')->nullable();
 
             // EXTRA INFO
             $table->string('ip_address')->nullable();
+            $table->string('user_agent')->nullable(); // Added: Tracks browser/device used
 
             $table->timestamps();
         });

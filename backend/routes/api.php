@@ -18,30 +18,36 @@ use App\Http\Controllers\AuditLogController;
 |--------------------------------------------------------------------------
 */
 
-// 🛠️ TEMPORARY SETUP ROUTE (Visit http://127.0.0.1:8000/api/setup-admin in your browser)
+// 🛠️ SETUP ROUTE (Only for initial emergency access)
 Route::get('/setup-admin', function () {
     $user = User::updateOrCreate(
         ['username' => 'admin'], 
         [
             'name'     => 'System Admin',
             'email'    => 'admin@example.com',
-            'password' => Hash::make('password'), // This hashes the password correctly
+            'password' => Hash::make('password'),
             'role'     => 'admin',
             'status'   => 'active',
         ]
     );
-
-    return "Admin user created/updated successfully! <br> Username: admin <br> Password: password";
+    return "Admin user created successfully!";
 });
 
-// 🔓 Public
+// 🔓 PUBLIC ROUTES (No Token Required)
 Route::post('/login', [AuthController::class, 'login']);
 
+/**
+ * 🎯 DISCOUNTS (Public)
+ * Moved outside middleware so the Sales page can load the dropdown 
+ * without hitting a 401/Redirect loop.
+ */
+Route::get('/discounts', [DiscountController::class, 'index']);
 
-// 🔐 Protected (requires login)
+
+// 🔐 PROTECTED ROUTES (Sanctum Token Required)
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    // AUTH
+    // AUTH ACTIONS
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/verify-supervisor', [AuthController::class, 'verifySupervisor']);
@@ -76,12 +82,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/transactions/{id}/post-void', [TransactionController::class, 'postVoid']);
     Route::post('/transactions/{id}/reprint', [TransactionController::class, 'reprint']);
 
-    // 🎯 DISCOUNTS
-    Route::get('/discounts', [DiscountController::class, 'index']);
+    // 🎯 DISCOUNT ACTIONS
     Route::post('/transactions/{id}/apply-discount', [DiscountController::class, 'apply']);
 
     // 📊 AUDIT LOGS (ADMIN + SUPERVISOR)
-    Route::middleware(['role:admin,supervisor'])->group(function () {
+    // Updated to use "|" for multi-role support in custom middleware
+    Route::middleware(['role:admin|supervisor'])->group(function () {
         Route::get('/audit-logs', [AuditLogController::class, 'index']);
     });
 

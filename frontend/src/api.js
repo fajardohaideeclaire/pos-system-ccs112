@@ -1,56 +1,56 @@
-const API_BASE = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
+const API_BASE = 'http://127.0.0.1:8000/api';
 
 const api = {
-    getToken: () => localStorage.getItem('pos_token'),
-
-    headers() {
-        const token = this.getToken();
-        return {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        };
-    },
-
     async request(method, path, body) {
-        const res = await fetch(`${API_BASE}${path}`, {
+        const token = localStorage.getItem('pos_token');
+        const url = `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
+        
+        const options = {
             method,
-            headers: this.headers(),
-            ...(body ? { body: JSON.stringify(body) } : {})
-        });
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+        };
 
-        const text = await res.text();
-        let data;
+        if (body) options.body = JSON.stringify(body);
 
-        // 1. Try to parse JSON first
         try {
-            data = JSON.parse(text);
-        } catch (e) {
-            // This happens if the server crashes and sends back HTML (Xdebug/Laravel error page)
-            console.error('❌ NON-JSON RESPONSE:', text);
-            throw new Error('Server returned an invalid format. Check Laravel logs.');
-        }
+            const res = await fetch(url, options);
 
-        // 2. Handle Logic Errors (like 401 Unauthenticated)
-        if (!res.ok) {
-            // If the error is auth-related, you probably want to clear the stale token
+            // 1. Handle Token Expiry / Invalid Token
             if (res.status === 401) {
-                console.warn('⚠️ Session expired or token invalid. Redirecting to login...');
                 localStorage.removeItem('pos_token');
-                // Optional: window.location.href = '/login';
+                // Only redirect if not already on login to avoid loops
+                if (!window.location.pathname.includes('/login')) {
+                    window.location.href = '/login';
+                }
+                throw new Error("Session expired. Please login again.");
             }
 
-            // Throw the ACTUAL message from the server (e.g., "Unauthenticated.")
-            throw new Error(data.message || `Request failed with status ${res.status}`);
-        }
+            const data = await res.json();
 
-        return data;
+            // 2. Handle Backend Errors (422, 500, etc)
+            if (!res.ok) {
+                const errorMsg = data.errors 
+                    ? Object.values(data.errors)[0][0] 
+                    : (data.message || 'Server Error');
+                throw new Error(errorMsg);
+            }
+
+            return data; 
+        } catch (error) {
+            console.error("API Request Failed:", error.message);
+            throw error;
+        }
     },
 
     get(path) { return this.request('GET', path); },
     post(path, body) { return this.request('POST', path, body); },
-    put(path, body) { return this.request('PUT', path, body); },
     patch(path, body) { return this.request('PATCH', path, body); },
+    put(path, body) { return this.request('PUT', path, body); },
+    delete(path) { return this.request('DELETE', path); }
 };
 
 export default api;
