@@ -8,6 +8,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php', // ✅ ADD THIS LINE
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -18,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
 
-        // Enable Sanctum stateful API (IMPORTANT for auth)
+        // Enable Sanctum stateful API
         $middleware->statefulApi();
     })
 
