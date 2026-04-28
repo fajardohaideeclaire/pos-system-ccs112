@@ -3,19 +3,11 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-<<<<<<< HEAD
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-=======
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
->>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         User::create([

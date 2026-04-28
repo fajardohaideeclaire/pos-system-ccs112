@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 // Controllers
 use App\Http\Controllers\AuthController;
@@ -15,6 +17,22 @@ use App\Http\Controllers\AuditLogController;
 | API Routes
 |--------------------------------------------------------------------------
 */
+
+// 🛠️ TEMPORARY SETUP ROUTE (Visit http://127.0.0.1:8000/api/setup-admin in your browser)
+Route::get('/setup-admin', function () {
+    $user = User::updateOrCreate(
+        ['username' => 'admin'], 
+        [
+            'name'     => 'System Admin',
+            'email'    => 'admin@example.com',
+            'password' => Hash::make('password'), // This hashes the password correctly
+            'role'     => 'admin',
+            'status'   => 'active',
+        ]
+    );
+
+    return "Admin user created/updated successfully! <br> Username: admin <br> Password: password";
+});
 
 // 🔓 Public
 Route::post('/login', [AuthController::class, 'login']);
