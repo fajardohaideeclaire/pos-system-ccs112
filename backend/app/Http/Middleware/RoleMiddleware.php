@@ -31,7 +31,7 @@ class RoleMiddleware
             return response()->json([
                 'message' => 'Unauthorized.'
             ], 403);
->>>>>>> origin/fernandez
+>>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
         }
 
         return $next($request);

@@ -9,7 +9,7 @@ use App\Models\User;
 =======
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
->>>>>>> origin/fernandez
+>>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
 
 class UserSeeder extends Seeder
 {

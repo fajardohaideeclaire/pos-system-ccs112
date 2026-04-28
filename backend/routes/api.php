@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 =======
 
 // Controllers
->>>>>>> origin/fernandez
+>>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
@@ -35,7 +35,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
 
     // AUTH
->>>>>>> origin/fernandez
+>>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/verify-supervisor', [AuthController::class, 'verifySupervisor']);
@@ -53,7 +53,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/products/search', [ProductController::class, 'search']);
 
     Route::middleware(['role:admin'])->group(function () {
->>>>>>> origin/fernandez
+>>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
         Route::post('/products', [ProductController::class, 'store']);
         Route::put('/products/{id}', [ProductController::class, 'update']);
         Route::patch('/products/{id}/deactivate', [ProductController::class, 'deactivate']);
@@ -67,7 +67,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // 👤 USERS (ADMIN ONLY)
     Route::middleware(['role:admin'])->group(function () {
->>>>>>> origin/fernandez
+>>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
         Route::get('/users', [UserController::class, 'index']);
         Route::post('/users', [UserController::class, 'store']);
         Route::put('/users/{id}', [UserController::class, 'update']);
@@ -80,7 +80,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 =======
 
     // 🧾 TRANSACTIONS
->>>>>>> origin/fernandez
+>>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::get('/transactions/{id}', [TransactionController::class, 'show']);
     Route::post('/transactions', [TransactionController::class, 'store']);
@@ -106,7 +106,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // 📊 AUDIT LOGS (ADMIN + SUPERVISOR)
     Route::middleware(['role:admin,supervisor'])->group(function () {
->>>>>>> origin/fernandez
+>>>>>>> fc86e44 (feat: initial project structure, migrations, auth backend + React frontend scaffold)
         Route::get('/audit-logs', [AuditLogController::class, 'index']);
     });
 
