@@ -7,16 +7,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-<<<<<<< HEAD
-        'http://localhost:3000',
-        'http://127.0.0.1:5500',
-    ],
-
-    'allowed_headers' => ['*'],
-
-=======
-        'http://localhost:3000',   // React (create-react-app)
-        'http://127.0.0.1:5500',  // Live Server / static frontend
+        'http://localhost:3000',   // React (CRA)
+        'http://127.0.0.1:5500',  // Live Server
     ],
 
     'allowed_origins_patterns' => [],
@@ -27,7 +19,6 @@ return [
 
     'max_age' => 0,
 
->>>>>>> origin/fernandez
     'supports_credentials' => true,
 
 ];
