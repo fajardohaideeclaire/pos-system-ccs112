@@ -4,17 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
+use Illuminate\Support\Facades\Log;
 
 class AuditLogController extends Controller
 {
     public function index(Request $request)
     {
         try {
-            $query = AuditLog::query() // ❌ removed with('user')
+            // Restore with('user') so the frontend can display 'log.user.name'
+            // Using 'user:id,name' optimizes by only selecting necessary columns
+            $query = AuditLog::with(['user:id,name'])
                 ->orderBy('created_at', 'desc');
 
+            // Module filter - changed to 'LIKE' for better search experience
             if ($request->filled('module')) {
-                $query->where('module', $request->module);
+                $query->where('module', 'LIKE', '%' . $request->module . '%');
             }
 
             if ($request->filled('action')) {
@@ -25,6 +29,7 @@ class AuditLogController extends Controller
                 $query->where('user_id', $request->user_id);
             }
 
+            // Date filtering
             if ($request->filled('date_from')) {
                 $query->whereDate('created_at', '>=', $request->date_from);
             }
@@ -33,13 +38,15 @@ class AuditLogController extends Controller
                 $query->whereDate('created_at', '<=', $request->date_to);
             }
 
-            return response()->json(
-                $query->paginate(50)
-            );
+            // Paginate results (default 50 matches your current setup)
+            return response()->json($query->paginate(50));
 
         } catch (\Throwable $e) {
+            // Log the error internally for the developer
+            Log::error("Audit Log Retrieval Error: " . $e->getMessage());
+
             return response()->json([
-                'message' => 'Audit logs error',
+                'message' => 'Failed to retrieve audit logs.',
                 'error' => $e->getMessage(),
             ], 500);
         }

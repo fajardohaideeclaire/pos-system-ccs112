@@ -3,7 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\RoleMiddleware; // ✅ add this
+use App\Http\Middleware\RoleMiddleware;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,19 +15,26 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // ✅ register alias used in routes/api.php
+        // Register the 'role' alias so we can use it in routes/api.php
+        // Example: ->middleware(['auth:sanctum', 'role:admin'])
         $middleware->alias([
             'role' => RoleMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // optional: force JSON for API errors
-        $exceptions->render(function (\Throwable $e, $request) {
+        
+        // Professional Grade: Global API Error Handler
+        $exceptions->render(function (\Throwable $e, Request $request) {
             if ($request->is('api/*')) {
+                // Determine the correct status code
+                $statusCode = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
+                
                 return response()->json([
                     'message' => $e->getMessage(),
                     'error' => class_basename($e),
-                ], 500);
+                    'status' => $statusCode
+                ], $statusCode);
             }
         });
+
     })->create();

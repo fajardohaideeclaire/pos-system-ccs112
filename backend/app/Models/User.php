@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens; // Required for Sanctum
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -18,6 +18,8 @@ class User extends Authenticatable
         'password',
         'role',
         'status',
+        'is_locked',
+        'failed_attempts',
     ];
 
     protected $hidden = [
@@ -28,5 +30,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_locked' => 'boolean',
     ];
 }

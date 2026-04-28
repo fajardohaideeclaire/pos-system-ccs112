@@ -16,15 +16,17 @@ return new class extends Migration
 
             // PRODUCT INFO
             $table->string('name');
-            $table->string('barcode')->unique();
-            $table->decimal('price', 10, 2);
+            // Change: Nullable barcode to prevent crashes on non-barcoded items
+            $table->string('barcode')->nullable()->unique(); 
+            $table->decimal('price', 10, 2)->default(0.00);
             $table->integer('stock_quantity')->default(0);
 
             // STATUS
             $table->enum('status', ['active', 'inactive'])->default('active');
 
             // TRACKING (USER REFERENCES)
-            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+            // Change: Use nullOnDelete so product history stays even if a user is deleted
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
 
             $table->timestamps();

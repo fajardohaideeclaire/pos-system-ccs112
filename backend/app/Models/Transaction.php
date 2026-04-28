@@ -9,21 +9,25 @@ class Transaction extends Model
     protected $fillable = [
         'transaction_number',
         'cashier_id',
+        'discount_id',
         'subtotal',
         'discount_amount',
-        'discount_type',
         'total_amount',
         'amount_paid',
         'change_amount',
         'status',
-        'void_reason',
-        'voided_by',
-        'voided_at',
-        'reprint_count',
+        'completed_at'
     ];
 
-    public function items()
-    {
+    public function items() {
         return $this->hasMany(TransactionItem::class);
+    }
+
+    public function cashier() {
+        return $this->belongsTo(User::class, 'cashier_id');
+    }
+
+    public function discount() {
+        return $this->belongsTo(Discount::class);
     }
 }

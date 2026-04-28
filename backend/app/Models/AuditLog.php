@@ -6,6 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class AuditLog extends Model
 {
-    protected $table = 'audit_logs'; // force correct table
-    protected $guarded = []; // allow all fields
+    protected $fillable = [
+        'user_id', 
+        'action', 
+        'module', 
+        'description', 
+        'old_values', 
+        'new_values', 
+        'ip_address', 
+        'user_agent'
+    ];
+
+    protected $casts = [
+        'old_values' => 'json',
+        'new_values' => 'json',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
